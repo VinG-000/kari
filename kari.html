@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karácsonyi Küldetés</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Outfit:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-glow: #ffb700;
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-bg: rgba(20, 0, 0, 0.4);
+            --card-bg: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+        }
+
+        body {
+            background-color: #1a0505;
+            background-image: 
+                radial-gradient(circle at 50% 0%, #6b0f0f 0%, transparent 70%),
+                radial-gradient(circle at 80% 80%, #380808 0%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5l.5.5.5-.5-.5-.5z' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title-font {
+            font-family: 'Mountains of Christmas', cursive;
+        }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 
+                0 4px 30px rgba(0, 0, 0, 0.4),
+                inset 0 0 20px rgba(255, 0, 0, 0.05);
+            border-radius: 24px;
+        }
+
+        /* Task Button Cards */
+        .task-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .task-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 60%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s ease;
+        }
+
+        .task-btn:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .task-btn:hover::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .task-btn.completed {
+            background: linear-gradient(135deg, #0f3923 0%, #062113 100%);
+            border-color: #2ecc71;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.15);
+        }
+
+        .task-btn.completed i {
+            color: #2ecc71;
+            text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+
+        /* Inputs */
+        .input-christmas {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fbbf24;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .input-christmas:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.5);
+            border-color: #fbbf24;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+        }
+
+        /* Hide number spinners */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Buttons */
+        .btn-action {
+            background: linear-gradient(to bottom, #d97706, #b45309);
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 #78350f, 0 10px 15px rgba(0,0,0,0.3);
+        }
+        
+        .btn-action:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #78350f, 0 5px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-action:hover:not(:active) {
+            filter: brightness(1.1);
+        }
+
+        /* Final Button */
+        .final-btn-container {
+            position: relative;
+            padding: 3px;
+            border-radius: 16px;
+            background: linear-gradient(45deg, #444, #222);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        
+        .final-btn-unlocked-wrapper {
+            background: linear-gradient(90deg, #ff0000, #ffae00, #ff0000);
+            background-size: 200% auto;
+            animation: borderRun 3s linear infinite;
+        }
+
+        @keyframes borderRun { to { background-position: 200% center; } }
+
+        .final-btn {
+            width: 100%;
+            height: 100%;
+            background: #2a2a2a;
+            color: #666;
+            border-radius: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .final-btn.active {
+            background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        
+        .final-btn.active:hover {
+            transform: scale(0.98);
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+        }
+
+        /* Light Rope */
+        .light-rope {
+            position: fixed;
+            top: -15px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .bulb {
+            width: 14px;
+            height: 24px;
+            background: #333;
+            border-radius: 50%;
+            margin: 0 12px;
+            position: relative;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+        .bulb::before {
+            content:''; position:absolute; top:-5px; left:3px; width:8px; height:6px; background:#222; border-radius:2px;
+        }
+        .bulb:nth-child(3n+1) { background: #ff3333; box-shadow: 0 5px 20px #ff0000; animation: glow 1.5s infinite alternate; }
+        .bulb:nth-child(3n+2) { background: #ffb700; box-shadow: 0 5px 20px #ffb700; animation: glow 1.5s infinite alternate 0.5s; }
+        .bulb:nth-child(3n+3) { background: #00ff66; box-shadow: 0 5px 20px #00ff66; animation: glow 1.5s infinite alternate 1s; }
+
+        @keyframes glow { from { opacity: 0.6; } to { opacity: 1; transform: scale(1.1); } }
+
+        /* Snow */
+        .snowflake {
+            position: fixed;
+            top: -20px;
+            color: white;
+            animation: fall linear forwards;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(1px);
+        }
+        @keyframes fall { to { transform: translateY(105vh) translateX(20px) rotate(360deg); } }
+
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hidden-section { display: none; }
+        .flex-section { display: flex; }
+
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Lights -->
+    <div class="light-rope">
+        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+        <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+    </div>
+
+    <div id="snow-container"></div>
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard" class="flex-section flex-col w-full max-w-2xl z-10 relative fade-in">
+        
+        <!-- Header -->
+        <div class="text-center mb-10 relative">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-red-600 rounded-full blur-[100px] opacity-20 -z-10"></div>
+            <h1 class="text-5xl md:text-7xl text-white title-font font-bold mb-2 drop-shadow-lg">
+                <span class="text-yellow-400">Karácsonyi</span><br>KÜLDETÉS
+            </h1>
+        </div>
+
+        <!-- Task Grid -->
+        <div class="grid grid-cols-2 gap-4 mb-10 px-2">
+            <!-- Task 1 -->
+            <button id="btn-task-0" onclick="openTask(0)" class="task-btn group p-6 flex flex-col items-center justify-center min-h-[160px]">
+                <div class="absolute top-3 right-3 text-green-400 opacity-0 transition-all duration-300 transform scale-50 check-icon">
+                    <i class="fas fa-check-circle text-xl shadow-lg rounded-full bg-black/50"></i>
+                </div>
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/10 to-transparent flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300 border border-white/10">
+                    <i class="fas fa-key text-yellow-400 text-3xl drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]"></i>
+                </div>
+                <span class="text-yellow-100/90 font-bold uppercase tracking-wider text-xs md:text-sm">A Számzár</span>
+                <span class="text-white/30 text-[10px] mt-1 group-hover:text-white/60 transition">1. Feladat</span>
+            </button>
+
+            <!-- Task 2 -->
+            <button id="btn-task-1" onclick="openTask(1)" class="task-btn group p-6 flex flex-col items-center justify-center min-h-[160px]">
+                <div class="absolute top-3 right-3 text-green-400 opacity-0 transition-all duration-300 transform scale-50 check-icon">
+                    <i class="fas fa-check-circle text-xl shadow-lg rounded-full bg-black/50"></i>
+                </div>
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/10 to-transparent flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300 border border-white/10">
+                    <i class="fas fa-th text-yellow-400 text-3xl drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]"></i>
+                </div>
+                <span class="text-yellow-100/90 font-bold uppercase tracking-wider text-xs md:text-sm">Rácsok</span>
+                <span class="text-white/30 text-[10px] mt-1 group-hover:text-white/60 transition">2. Feladat</span>
+            </button>
+
+            <!-- Task 3 -->
+            <button id="btn-task-2" onclick="openTask(2)" class="task-btn group p-6 flex flex-col items-center justify-center min-h-[160px]">
+                <div class="absolute top-3 right-3 text-green-400 opacity-0 transition-all duration-300 transform scale-50 check-icon">
+                    <i class="fas fa-check-circle text-xl shadow-lg rounded-full bg-black/50"></i>
+                </div>
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/10 to-transparent flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300 border border-white/10">
+                    <i class="fas fa-users text-yellow-400 text-3xl drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]"></i>
+                </div>
+                <span class="text-yellow-100/90 font-bold uppercase tracking-wider text-xs md:text-sm">Logika</span>
+                <span class="text-white/30 text-[10px] mt-1 group-hover:text-white/60 transition">3. Feladat</span>
+            </button>
+
+            <!-- Task 4 -->
+            <button id="btn-task-3" onclick="openTask(3)" class="task-btn group p-6 flex flex-col items-center justify-center min-h-[160px]">
+                <div class="absolute top-3 right-3 text-green-400 opacity-0 transition-all duration-300 transform scale-50 check-icon">
+                    <i class="fas fa-check-circle text-xl shadow-lg rounded-full bg-black/50"></i>
+                </div>
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/10 to-transparent flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300 border border-white/10">
+                    <i class="fas fa-calculator text-yellow-400 text-3xl drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]"></i>
+                </div>
+                <span class="text-yellow-100/90 font-bold uppercase tracking-wider text-xs md:text-sm">Algebra</span>
+                <span class="text-white/30 text-[10px] mt-1 group-hover:text-white/60 transition">4. Feladat</span>
+            </button>
+        </div>
+
+        <!-- Final Button -->
+        <div id="final-btn-container" class="final-btn-container">
+            <button id="final-btn" onclick="showWinScreen()" disabled class="final-btn py-5">
+                <i id="final-icon" class="fas fa-lock text-lg"></i>
+                <span>Ajándék Kinyitása</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- TASK MODAL -->
+    <div id="view-task" class="hidden-section fixed inset-0 z-50 bg-black/90 backdrop-blur-sm items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg p-8 relative flex flex-col max-h-[90vh] overflow-y-auto fade-in border-yellow-500/20">
+            
+            <!-- Close -->
+            <button onclick="closeTask()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/20 transition text-white/70 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="text-center">
+                <h2 id="task-title" class="text-3xl font-bold text-yellow-400 mb-6 title-font drop-shadow-md"></h2>
+                
+                <!-- Content -->
+                <div id="task-content-area" class="mb-2 transition-all duration-500"></div>
+
+                <!-- Success -->
+                <div id="task-success-msg" class="hidden flex-col items-center justify-center py-10 animate-bounce">
+                    <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-4 ring-2 ring-green-500">
+                        <i class="fas fa-check text-4xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-1">Tökéletes!</h3>
+                    <p class="text-white/50 text-sm">A kód elfogadva.</p>
+                </div>
+
+                <button onclick="closeTask()" class="mt-6 text-white/40 hover:text-white text-xs uppercase tracking-widest transition-colors py-2">
+                    <i class="fas fa-arrow-left mr-2"></i>Vissza
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WIN SCREEN -->
+    <div id="view-win" class="hidden-section fixed inset-0 z-50 bg-[#2b0808] items-center justify-center p-4">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-50"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-red-600/30 rounded-full blur-[120px]"></div>
+
+        <div class="text-center max-w-2xl w-full relative z-10 fade-in">
+            <div class="text-8xl text-yellow-400 mb-8 drop-shadow-[0_0_50px_rgba(250,204,21,0.6)] animate-bounce">
+                <i class="fas fa-gift"></i>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl text-white font-bold title-font mb-4 leading-tight">
+                Boldog<br><span class="text-yellow-400">Karácsonyt!</span>
+            </h1>
+            
+            <div class="glass-panel p-10 mt-10 border-yellow-500/30 transform hover:scale-105 transition duration-500">
+                <p class="text-yellow-100/60 uppercase tracking-[0.2em] text-xs mb-6 font-bold">A Titkos Helyszín:</p>
+                <h2 id="final-location-display" class="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-white to-yellow-200 title-font animate-pulse pb-2">
+                    <!-- JS tölti ki -->
+                </h2>
+                <div class="mt-8 flex justify-center gap-6 text-2xl">
+                    <i class="fas fa-star text-yellow-500 animate-spin-slow"></i>
+                    <i class="fas fa-holly-berry text-red-500"></i>
+                    <i class="fas fa-star text-yellow-500 animate-spin-slow"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const FINAL_LOCATION = "Szabaduló szoba 5 főre";
+        let taskStatus = [false, false, false, false];
+
+        const tasks = [
+            // Task 1: Safe (Insane)
+            {
+                id: 1, title: "Digitális Zár",
+                render: () => `
+                    <div class="bg-black/20 p-5 rounded-2xl border border-white/5 text-left mb-6">
+                        <p class="text-yellow-100/90 italic text-sm leading-relaxed">
+                            "A kód egy 4 jegyű szám.<br>
+                            1. Minden számjegy a 2 hatványa.<br>
+                            2. A számjegyek szigorúan csökkenő sorrendben vannak.<br>
+                            3. Az első számjegy a harmadik köbe.<br>
+                            4. A második számjegy négyzete egyenlő az első kétszeresével."
+                        </p>
+                    </div>
+                    <input type="number" id="safe-input" placeholder="0000" class="input-christmas w-full py-4 text-center text-4xl tracking-[0.5em] mb-4">
+                    <button onclick="checkSafe()" class="btn-action w-full py-4 text-lg">Ellenőrzés</button>
+                    <p id="safe-msg" class="text-red-400 font-bold text-xs mt-3 h-5"></p>
+                `
+            },
+            // Task 2: Squares (Brutal: 4x4 + 2 Offset Squares)
+            {
+                id: 2, title: "Geometria",
+                render: () => {
+                    // Logic: 
+                    // 4x4 base = 30 squares.
+                    // Extra Top Square (50x50 at intersection): 
+                    //   - Divided by grid lines into 4 small (25x25) squares.
+                    //   - Plus the big 50x50 frame itself.
+                    //   - Total +5.
+                    // Extra Bottom Square: Same logic (+5).
+                    // Total = 40.
+                    const targetCount = 40; 
+                    return `
+                        <p class="text-yellow-100/80 mb-6 text-sm">Hány <b>NÉGYZETET</b> látsz az ábrán összesen? (Figyelem: számolj meg minden apró és átfedésben lévő négyzetet is!)</p>
+                        <div class="flex justify-center mb-8 bg-black/40 p-6 rounded-2xl border border-white/5">
+                            <!-- SVG Grid 4x4 with 2 Extra Offset Squares -->
+                            <svg width="200" height="200" class="drop-shadow-2xl">
+                                <defs>
+                                    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                                        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#fbbf24" stroke-width="2" stroke-opacity="0.8"/>
+                                    </pattern>
+                                </defs>
+                                <!-- Main Grid 200x200 (4*50) -->
+                                <rect width="200" height="200" fill="url(#grid)" stroke="#fbbf24" stroke-width="4"/>
+                                
+                                <!-- Extra Square 1: Centered at x=100 (3rd line), y=50 (2nd line) -->
+                                <!-- Size 50x50, so coords: x=75, y=25 -->
+                                <rect x="75" y="25" width="50" height="50" fill="none" stroke="#fbbf24" stroke-width="3" stroke-opacity="0.9" />
+                                
+                                <!-- Extra Square 2: Reflection downwards (y=150 center) -->
+                                <!-- Coords: x=75, y=125 -->
+                                <rect x="75" y="125" width="50" height="50" fill="none" stroke="#fbbf24" stroke-width="3" stroke-opacity="0.9" />
+                            </svg>
+                        </div>
+                        <div class="flex gap-3">
+                            <input type="number" id="count-input" class="input-christmas w-24 text-center text-2xl" placeholder="?">
+                            <button onclick="checkCount(${targetCount})" class="btn-action flex-1">Mehet</button>
+                        </div>
+                        <p id="count-msg" class="text-red-400 font-bold text-xs mt-3 h-5"></p>
+                    `;
+                }
+            },
+            // Task 3: Logic (Manó Names)
+            {
+                id: 3, title: "Manó Sorbanállás",
+                render: () => `
+                    <div class="bg-black/20 p-5 rounded-2xl border border-white/5 text-left mb-6 max-h-[40vh] overflow-y-auto">
+                        <p class="text-white/80 text-xs mb-2 italic">Ki áll a sor <b>KÖZEPÉN</b> (3. hely)?</p>
+                        <ul class="text-yellow-100/80 text-sm space-y-2 list-disc pl-4 italic leading-tight">
+                            <li>5 Manó áll sorban: <b>Aladár, Balambér, Cecil, Döme, Elemér</b>.</li>
+                            <li><b>Aladár</b> a sor valamelyik szélén áll.</li>
+                            <li><b>Balambér</b> pontosan <b>Aladár</b> mellett áll.</li>
+                            <li><b>Cecil</b> nem áll <b>Elemér</b> mellett.</li>
+                            <li><b>Döme</b> nem áll a szélen.</li>
+                            <li><b>Elemér</b> jobb oldalán (a sor vége felé) áll <b>Döme</b>.</li>
+                        </ul>
+                    </div>
+                    <p class="text-white mb-2 text-sm font-bold">Írd be a manó nevét:</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="riddle-input" class="input-christmas w-full text-center uppercase p-3" placeholder="NÉV">
+                        <button onclick="checkRiddle()" class="btn-action px-6">OK</button>
+                    </div>
+                    <p id="riddle-msg" class="text-red-400 font-bold text-xs mt-3 h-5"></p>
+                `
+            },
+            // Task 4: Math (Insane)
+            {
+                id: 4, title: "Matek Mester",
+                render: () => `
+                    <div class="bg-black/20 p-6 rounded-2xl border border-white/5 font-mono text-lg space-y-3 mb-6">
+                        <p class="text-center text-sm mb-4 text-white/50">Keressük: X × Y × Z értékét!</p>
+                        <div class="border-b border-white/10 pb-1">X, Y, Z pozitív egész számok</div>
+                        <div class="border-b border-white/10 pb-1">X + Y + Z = 15</div>
+                        <div class="border-b border-white/10 pb-1">X² + Y² + Z² = 83</div>
+                        <div class="border-b border-white/10 pb-1">X < Y < Z</div>
+                    </div>
+                    <div class="flex gap-3">
+                         <input type="number" id="math-input" class="input-christmas w-full text-center text-2xl p-2" placeholder="?">
+                         <button onclick="checkMath()" class="btn-action px-8">OK</button>
+                    </div>
+                    <p id="math-msg" class="text-red-400 font-bold text-xs mt-3 h-5"></p>
+                `
+            }
+        ];
+
+        // Logic Helpers
+        function completeCurrentTask(id) {
+            taskStatus[id] = true;
+            document.getElementById('task-content-area').style.display = 'none';
+            document.getElementById('task-success-msg').classList.remove('hidden');
+            document.getElementById('task-success-msg').style.display = 'flex';
+            
+            const btn = document.getElementById('btn-task-' + id);
+            btn.classList.add('completed');
+            btn.querySelector('.check-icon').style.opacity = '1';
+            btn.querySelector('.check-icon').style.transform = 'scale(1)';
+            
+            checkAllTasks();
+        }
+
+        // Safe: 8421
+        function checkSafe() {
+            if (document.getElementById('safe-input').value === "8421") {
+                completeCurrentTask(0);
+            } else {
+                showError('safe-msg', 'safe-input');
+            }
+        }
+
+        // Squares: 40
+        function checkCount(target) {
+            if (parseInt(document.getElementById('count-input').value) === target) {
+                completeCurrentTask(1);
+            } else {
+                showError('count-msg', 'count-input');
+            }
+        }
+
+        // Logic: Elemér
+        function checkRiddle() {
+            const val = document.getElementById('riddle-input').value.trim().toUpperCase();
+            if (['ELEMÉR', 'ELEMER'].includes(val)) {
+                completeCurrentTask(2);
+            } else {
+                showError('riddle-msg', 'riddle-input');
+            }
+        }
+
+        // Math: 105 (3,5,7)
+        function checkMath() {
+            if (parseInt(document.getElementById('math-input').value) === 105) {
+                completeCurrentTask(3);
+            } else {
+                showError('math-msg', 'math-input');
+            }
+        }
+
+        function showError(msgId, inputId) {
+            document.getElementById(msgId).innerText = "Hibás válasz. Próbáld újra!";
+            const el = document.getElementById(inputId);
+            el.classList.add('shake');
+            setTimeout(() => el.classList.remove('shake'), 500);
+        }
+
+        function checkAllTasks() {
+            if (taskStatus.every(s => s)) {
+                const con = document.getElementById('final-btn-container');
+                const btn = document.getElementById('final-btn');
+                
+                con.classList.add('final-btn-unlocked-wrapper');
+                btn.disabled = false;
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fas fa-lock-open"></i> AJÁNDÉK KINYITÁSA';
+            }
+        }
+
+        // Navigation
+        function openTask(index) {
+            if (taskStatus[index]) return; // Don't reopen if done
+            
+            const t = tasks[index];
+            document.getElementById('task-title').innerText = t.title;
+            const area = document.getElementById('task-content-area');
+            area.style.display = 'block';
+            area.innerHTML = t.render();
+            document.getElementById('task-success-msg').classList.add('hidden');
+            document.getElementById('task-success-msg').style.display = 'none';
+
+            toggleView('view-task');
+        }
+
+        function closeTask() { toggleView('view-dashboard'); }
+        
+        function showWinScreen() { 
+            document.getElementById('final-location-display').innerText = FINAL_LOCATION;
+            toggleView('view-win');
+            createConfetti(); 
+        }
+
+        function toggleView(viewId) {
+            ['view-dashboard', 'view-task', 'view-win'].forEach(id => {
+                const el = document.getElementById(id);
+                if (id === viewId) {
+                    el.classList.remove('hidden-section');
+                    el.classList.add('flex-section');
+                } else {
+                    el.classList.add('hidden-section');
+                    el.classList.remove('flex-section');
+                }
+            });
+        }
+
+        // Effects
+        function createSnow() {
+            const container = document.getElementById('snow-container');
+            const symbols = ['❄', '•', '✨'];
+            for (let i = 0; i < 40; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.fontSize = Math.random() * 15 + 8 + 'px';
+                flake.style.opacity = Math.random() * 0.7 + 0.3;
+                flake.style.animationDuration = Math.random() * 5 + 5 + 's';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(flake);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#fcd34d', '#ef4444', '#ffffff'];
+            for(let i=0; i<60; i++) {
+                const c = document.createElement('div');
+                c.style.position = 'fixed';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.top = '-10px';
+                c.style.width = '8px'; c.style.height = '8px';
+                c.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+                c.style.animation = `fall ${Math.random()*2+2}s linear forwards`;
+                c.style.zIndex = '100';
+                document.body.appendChild(c);
+            }
+        }
+
+        createSnow();
+    </script>
+</body>
+</html>
